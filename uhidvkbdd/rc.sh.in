@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# PROVIDE: uhidvkbdd
+# REQUIRE: DAEMON
+# BEFORE: LOGIN
+# KEYWORD: nojail
+
+. /etc/rc.subr
+
+name=uhidvkbdd
+rcvar=${name}_enable
+command=%%PREFIX%%/sbin/$name
+start_cmd=${name}_start
+required_modules=vkbd
+
+uhidvkbdd_start()
+{
+    local dev
+    if [ $# = 0 ]; then
+        for dev in /dev/uhid[0-9]*; do
+            ${command} "$dev"
+        done
+    else
+        ${command} "$@"
+    fi
+}
+
+load_rc_config $name
+run_rc_command $*
